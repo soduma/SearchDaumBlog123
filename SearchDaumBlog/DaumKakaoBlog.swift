@@ -25,7 +25,9 @@ struct DaumKakaoDocument: Codable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.title = try? values.decode(String?.self, forKey: .title)
+        self.title = try? values.decode(String?.self, forKey: .title)?
+            .replacingOccurrences(of: "</b>", with: "")
+            .replacingOccurrences(of: "<b>", with: "")
         self.name = try? values.decode(String?.self, forKey: .name)
         self.thumbnail = try? values.decode(String?.self, forKey: .thumbnail)
         self.datetime = Date.parse(values, key: .datetime)

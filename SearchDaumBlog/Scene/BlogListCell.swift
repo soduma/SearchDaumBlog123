@@ -19,26 +19,27 @@ class BlogListCell: UITableViewCell {
         super.layoutSubviews()
         
         thumbnailImageView.contentMode = .scaleAspectFit
-        nameLabel.font = .systemFont(ofSize: 18, weight: .bold)
-        titleLabel.font = .systemFont(ofSize: 14)
+        nameLabel.font = .systemFont(ofSize: 14)
+        titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         titleLabel.numberOfLines = 2
         dateTimeLabel.font = .systemFont(ofSize: 12, weight: .light)
         
         [thumbnailImageView, nameLabel, titleLabel, dateTimeLabel].forEach { addSubview($0) }
-        nameLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview().inset(8)
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(16)
+            $0.leading.equalToSuperview().inset(8)
             $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(8)
         }
         
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(nameLabel.snp.bottom).offset(8)
-            $0.leading.equalTo(nameLabel)
-            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(8)
+        nameLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
+            $0.leading.equalTo(titleLabel)
+            $0.trailing.equalTo(titleLabel)
         }
         
         dateTimeLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-            $0.leading.equalTo(nameLabel)
+            $0.top.equalTo(nameLabel.snp.bottom).offset(8)
+            $0.leading.equalTo(titleLabel)
             $0.trailing.equalTo(titleLabel)
             $0.bottom.equalTo(thumbnailImageView)
         }
