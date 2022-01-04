@@ -20,7 +20,7 @@ class BlogListView: UITableView {
         super.init(frame: frame, style: style)
         
         bind()
-        attribute()
+        configure()
     }
     
     required init?(coder: NSCoder) {
@@ -40,7 +40,7 @@ class BlogListView: UITableView {
             .disposed(by: disposeBag)
     }
     
-    private func attribute() {
+    private func configure() {
         backgroundColor = .systemBackground
         register(BlogListCell.self, forCellReuseIdentifier: "BlogListCell")
         separatorStyle = .singleLine

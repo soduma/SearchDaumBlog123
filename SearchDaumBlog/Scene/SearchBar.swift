@@ -21,7 +21,7 @@ class SearchBar: UISearchBar {
         super.init(frame: frame)
         
         bind()
-        attribute()
+        configure()
         layout()
     }
     
@@ -50,7 +50,7 @@ class SearchBar: UISearchBar {
         
     }
     
-    private func attribute() {
+    private func configure() {
         searchButton.setTitle("검색", for: .normal)
         searchButton.setTitleColor(.systemYellow, for: .normal)
     }

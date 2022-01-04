@@ -9,7 +9,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import SnapKit
-import CoreMedia
 
 class MainViewController: UIViewController {
     let disposeBag = DisposeBag()
@@ -22,17 +21,86 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         bind()
-        attribute()
+        configure()
         layout()
     }
     
     private func bind() {
-        let alertSheetForSorting = listView.headerView.tapSortButton
-            .map { _ -> Alert in
-                return (title: nil, message: nil, actions: [.title, .dateTime, .cancel], style: .actionSheet)
+        let blogResult = searchBar.shouldLoadResult
+            .flatMapLatest { query in
+                SearchBlogNetwork().searchBlog(query: query)
+            }
+            .share()
+        
+        let blogValue = blogResult
+            .compactMap { data -> DaumKakaoBlog? in
+                guard case .success(let value) = data else {
+                    return nil
+                }
+                return value
             }
         
-        alertSheetForSorting
+        let blogError = blogResult
+            .compactMap { data -> String? in
+                guard case .failure(let error) = data else {
+                    return nil
+                }
+                return error.localizedDescription
+            }
+        
+        //네트워크를 통해 가져온 값을 celldata로 변환
+        let cellData = blogValue
+            .map { blog -> [BlogListCellData] in
+                return blog.documents
+                    .map { doc in
+                        let thumbnailURL = URL(string: doc.thumbnail ?? "")
+                        return BlogListCellData(imageURL: thumbnailURL, name: doc.name, title: doc.title, datetime: doc.datetime)
+                    }
+            }
+        
+        //filterView의 alertSheet를 선택했을 때 type
+        let sortedType = tapAlertAction
+            .filter {
+                switch $0 {
+                case .title, .datetime:
+                    return true
+                default:
+                    return false
+                }
+            }
+            .startWith(.title)
+        
+        //mainViewController -> ListView
+        Observable
+            .combineLatest(sortedType, cellData) {
+                type, data -> [BlogListCellData] in
+                switch type {
+                case .title:
+                    return data.sorted { $0.title ?? "" < $1.title ?? "" }
+                case .datetime:
+                    return data.sorted { $0.datetime ?? Date() > $1.datetime ?? Date() }
+                default:
+                    return data
+                }
+            }
+            .bind(to: listView.cellData)
+            .disposed(by: disposeBag)
+        
+        let alertSheetForSorting = listView.headerView.tapSortButton
+            .map { _ -> Alert in
+                return (title: nil, message: nil, actions: [.title, .datetime, .cancel], style: .actionSheet)
+            }
+        
+        let alertForErrorMessage = blogError
+            .map { message -> Alert in
+                return (title: "앗!", message: "오류발생!!", actions: [.confirm], style: .alert)
+            }
+        
+        Observable
+            .merge(
+                alertSheetForSorting,
+                alertForErrorMessage
+            )
             .asSignal(onErrorSignalWith: .empty())
             .flatMapLatest { alert -> Signal<AlertAction> in
                 let alertController = UIAlertController(title: alert.title, message: alert.message, preferredStyle: alert.style)
@@ -42,7 +110,7 @@ class MainViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func attribute() {
+    private func configure() {
         navigationItem.title = "다음 블로그 검색"
         view.backgroundColor = .systemBackground
     }
@@ -66,14 +134,14 @@ extension MainViewController {
     typealias Alert = (title: String?, message: String?, actions: [AlertAction], style: UIAlertController.Style)
     
     enum AlertAction: AlertActionConvertible {
-        case title, dateTime, cancel
+        case title, datetime, cancel
         case confirm
         
         var title: String {
             switch self {
             case .title:
                 return "Title"
-            case .dateTime:
+            case .datetime:
                 return "DateTime"
             case .cancel:
                 return "취소"
@@ -84,7 +152,7 @@ extension MainViewController {
         
         var style: UIAlertAction.Style {
             switch self {
-            case .title, .dateTime:
+            case .title, .datetime:
                 return .default
             case .cancel, .confirm:
                 return .cancel

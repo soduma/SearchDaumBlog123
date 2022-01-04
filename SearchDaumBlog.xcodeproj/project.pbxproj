@@ -85,7 +85,6 @@
 				A082F2412782DACB00A24DBF /* AppDelegate.swift */,
 				A082F2432782DACB00A24DBF /* SceneDelegate.swift */,
 				A082F26D2782E9B000A24DBF /* Scene */,
-				A082F26B2782E81900A24DBF /* BlogListCellData.swift */,
 				A082F2722783F8B200A24DBF /* SearchBlogAPI.swift */,
 				A082F2742783F9C500A24DBF /* SearchBlogNetwork.swift */,
 				A082F2702783F46200A24DBF /* DaumKakaoBlog.swift */,
@@ -105,6 +104,7 @@
 				A082F2652782E53800A24DBF /* FilterView.swift */,
 				A082F2672782E7FA00A24DBF /* BlogListView.swift */,
 				A082F2692782E80500A24DBF /* BlogListCell.swift */,
+				A082F26B2782E81900A24DBF /* BlogListCellData.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";

@@ -22,7 +22,7 @@ class FilterView: UITableViewHeaderFooterView {
         super.init(reuseIdentifier: reuseIdentifier)
         
         bind()
-        attribute()
+        configure()
         layout()
     }
     
@@ -36,7 +36,7 @@ class FilterView: UITableViewHeaderFooterView {
             .disposed(by: disposeBag)
     }
     
-    private func attribute() {
+    private func configure() {
         sortButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
         bottomLine.backgroundColor = .separator
     }
