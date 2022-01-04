@@ -58,7 +58,7 @@ class BlogListCell: UITableViewCell {
         var dataTime: String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-            let contentDate = data.dateTime ?? Date()
+            let contentDate = data.datetime ?? Date()
             return dateFormatter.string(from: contentDate)
         }
         dateTimeLabel.text = dataTime
