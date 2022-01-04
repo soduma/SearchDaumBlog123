@@ -14,7 +14,7 @@ class MainViewController: UIViewController {
     let disposeBag = DisposeBag()
     let searchBar = SearchBar()
     let listView = BlogListView()
-    
+    //test
     let tapAlertAction = PublishRelay<AlertAction>()
 
     override func viewDidLoad() {
