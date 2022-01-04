@@ -15,13 +15,10 @@ class FilterView: UITableViewHeaderFooterView {
     
     let sortButton = UIButton()
     let bottomLine = UIView()
-    
-    let tapSortButton = PublishRelay<Void>()
-    
+        
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
-        bind()
         configure()
         layout()
     }
@@ -30,9 +27,9 @@ class FilterView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bind() {
+    func bind(_ viewModel: FilterViewModel) {
         sortButton.rx.tap
-            .bind(to: tapSortButton)
+            .bind(to: viewModel.tapSortButton)
             .disposed(by: disposeBag)
     }
     
